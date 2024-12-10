@@ -26,4 +26,13 @@ export default class UserService {
       throw new Error('No se pudieron obtener los usuarios en el service');
     }
   }
+
+  public async getUserById(userId : string): Promise<User | null> {
+    try {
+      return await this.userRepository.getUserById(Number(userId));
+    } catch (error) {
+      console.error(`Error en el Service User ${error}`);
+      throw new Error('No se pudieron obtener los usuarios en el service');
+    }
+  }
 }
