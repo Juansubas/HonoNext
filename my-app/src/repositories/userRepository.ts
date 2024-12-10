@@ -1,6 +1,6 @@
 import type { User } from "@prisma/client";
 import { prisma } from "../utils/prisma";
-import type { UserCreate } from "../types/User";
+import type { UserCreate, UserUpdate } from "../types/User";
 
 class UserRepository {
   public async getAllUsers(): Promise<User[]> {
@@ -42,6 +42,42 @@ class UserRepository {
     } catch (error) {
       console.error('Error en el repository');
       throw new Error(`Error al obtener el usuario por id, ${error}`);
+    }
+  }
+
+  public async deleteUser(userId: number) : Promise<void> {
+    try {
+      const user : User | null = await prisma.user.delete(
+        {
+          where: {
+            id: userId
+          }
+        }
+      )
+
+    } catch (error) {
+      console.error('Error en el repository');
+      throw new Error(`Error al eliminar usuario por id, ${error}`);
+    }
+  }
+
+  public async updateUser(userId: number, user: UserUpdate) {
+    try {
+      await prisma.user.update({
+        where: {
+          id: userId
+        },
+        data: {
+          firtsName: user.firstName,
+          lastName: user.lastName,
+          username : user.userName,
+          email: user.email,
+          password: user.password
+        }
+      })
+    } catch (error) {
+      console.error('Error en el repository');
+      throw new Error(`Error al actualizar usuario, ${error}`);
     }
   }
 }

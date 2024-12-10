@@ -1,6 +1,6 @@
 import type { User } from "@prisma/client";
 import type UserRepository from "../repositories/userRepository";
-import type { UserCreate } from "../types/User";
+import type { UserCreate, UserUpdate } from "../types/User";
 import hash from "../utils/bcrypt";
 
 export default class UserService {
@@ -33,6 +33,27 @@ export default class UserService {
     } catch (error) {
       console.error(`Error en el Service User ${error}`);
       throw new Error('No se pudieron obtener los usuarios en el service');
+    }
+  }
+
+  public async deleteUser(userId: string) : Promise<void> {
+    try {
+      await this.userRepository.deleteUser(Number(userId));
+    } catch (error) {
+      console.error(`Error en el Service User ${error}`);
+      throw new Error('No se pudo eliminar el usuario en el service');
+    }
+  }
+  public async updateUser(userId: string, user : UserUpdate) : Promise<void> {
+    try {
+      if(user.password) {
+        const passwordHash = await hash(user.password);
+        user.password = passwordHash;
+      }
+      await this.userRepository.updateUser(Number(userId), user);
+    } catch (error) {
+      console.error(`Error en el Service User ${error}`);
+      throw new Error('No se pudo actualizar el usuario en el service');
     }
   }
 }
