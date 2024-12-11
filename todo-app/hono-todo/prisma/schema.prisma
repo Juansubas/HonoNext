@@ -1,0 +1,127 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id         Int      @id @default(autoincrement())
+  firstName  String   @db.VarChar(255) @map("first_name")
+  lastName   String   @db.VarChar(255) @map("last_name")
+  age        Int     
+  email      String   @db.VarChar(255) @unique
+  phone      String   @db.VarChar(20)
+  birthDate  DateTime @map("birth_date")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  boards         Boards[]         @relation("BoardsCreatedBy")
+  comments       Comments[]
+  boardMembers   BoardMembers[]
+  activityLogs   ActivityLogs[]
+
+}
+
+model Boards {
+  id          Int      @id @default(autoincrement()) @map("id")
+  name        String   @db.VarChar(255) 
+  description String   @db.Text
+  createdBy   Int      @map("created_by")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  user        Users    @relation(fields: [createdBy], references: [id], name: "BoardsCreatedBy")
+
+  lists        Lists[]
+  boardMembers BoardMembers[]
+  activityLogs ActivityLogs[]
+
+}
+
+model Lists {
+  id         Int      @id @default(autoincrement())
+  boardId    Int      @map("board_id")
+  name       String   @db.VarChar(255) 
+  position   Int      
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  board      Boards   @relation(fields: [boardId], references: [id])
+
+  cards Cards[]
+
+}
+
+model Cards {
+  id          Int      @id @default(autoincrement()) 
+  listId      Int      @map("list_id")
+  title       String   @db.VarChar(255) 
+  description String   @db.Text
+  position    Int      
+  dueDate     DateTime @map("due_date")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  list        Lists    @relation(fields: [listId], references: [id])
+
+  comments Comments[]
+
+}
+
+model Comments {
+  id        Int      @id @default(autoincrement()) 
+  userId    Int      @map("user_id")
+  cardId    Int      @map("card_id")
+  content   String   @db.Text 
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user Users @relation(fields: [userId], references: [id])
+  card Cards @relation(fields: [cardId], references: [id])
+
+}
+
+
+model Roles {
+  id          Int      @id @default(autoincrement()) 
+  name        String   @db.VarChar(255) 
+  description String   @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  boardMembers BoardMembers[]
+
+}
+
+
+model BoardMembers {
+  boardId   Int      @map("board_id")
+  userId    Int      @map("user_id")
+  roleId    Int      @map("role_id")
+  action    String   @db.VarChar(255) 
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user  Users  @relation(fields: [userId], references: [id])
+  board Boards @relation(fields: [boardId], references: [id])
+  role  Roles  @relation(fields: [roleId], references: [id])
+
+  @@id([userId, boardId])
+}
+
+model ActivityLogs {
+  id        Int      @id @default(autoincrement()) 
+  boardId   Int      @map("board_id")
+  userId    Int      @map("user_id")
+  action    String   @db.VarChar(255) 
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user  Users  @relation(fields: [userId], references: [id])
+  board Boards @relation(fields: [boardId], references: [id])
+
+}
