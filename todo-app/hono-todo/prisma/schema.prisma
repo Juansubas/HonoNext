@@ -28,6 +28,7 @@ model Users {
   comments       Comments[]
   boardMembers   BoardMembers[]
   activityLogs   ActivityLogs[]
+  roles          Roles[] 
 
 }
 
@@ -88,7 +89,7 @@ model Comments {
 }
 
 
-model Roles {
+model RolesBoard {
   id          Int      @id @default(autoincrement()) 
   name        String   @db.VarChar(255) 
   description String   @db.Text
@@ -96,7 +97,17 @@ model Roles {
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   boardMembers BoardMembers[]
+}
 
+model Roles {
+  id          Int      @id @default(autoincrement()) 
+  userId      Int      @map("user_id")
+  name        String   @db.VarChar(255) 
+  description String   @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user Users @relation(fields: [userId], references: [id])
 }
 
 
@@ -109,7 +120,7 @@ model BoardMembers {
 
   user  Users  @relation(fields: [userId], references: [id])
   board Boards @relation(fields: [boardId], references: [id])
-  role  Roles  @relation(fields: [roleId], references: [id])
+  role  RolesBoard  @relation(fields: [roleId], references: [id])
 
   @@id([userId, boardId])
 }
