@@ -1,6 +1,7 @@
 export type createUserDto = {
   firstName : string,
   lastName: string,
+  password: string,
   age: number,
   email: string,
   phone: string,
@@ -18,3 +19,5 @@ export type UserDto = {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type updateUserDto = Partial<createUserDto>;

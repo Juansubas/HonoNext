@@ -17,6 +17,7 @@ model Users {
   id         Int      @id @default(autoincrement())
   firstName  String   @db.VarChar(255) @map("first_name")
   lastName   String   @db.VarChar(255) @map("last_name")
+  password   String   @db.VarChar(255) 
   age        Int     
   email      String   @db.VarChar(255) @unique
   phone      String   @db.VarChar(20)
@@ -87,7 +88,6 @@ model Comments {
   card Cards @relation(fields: [cardId], references: [id])
 
 }
-
 
 model RolesBoard {
   id          Int      @id @default(autoincrement()) 
