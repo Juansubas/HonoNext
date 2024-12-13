@@ -21,3 +21,7 @@ export type UserDto = {
 }
 
 export type updateUserDto = Partial<createUserDto>;
+
+export type updateUserRoleDto = {
+  roleId: number;
+}

@@ -13,6 +13,7 @@ export class UserRepository implements UserRepositoryInterface {
         },
         select:{
           id: true,
+          roleId: true,
           firstName: true,
           lastName: true,
           password: false,
@@ -51,6 +52,7 @@ export class UserRepository implements UserRepositoryInterface {
         select:{
           id: true,
           firstName: true,
+          roleId: true,
           lastName: true,
           password: false,
           age: true,
@@ -67,9 +69,9 @@ export class UserRepository implements UserRepositoryInterface {
     }
   }
 
-  public async createUser(user: createUserDto): Promise<void> {
+  public async createUser(user: createUserDto): Promise<Users> {
     try {
-      await prisma.users.create({
+      return await prisma.users.create({
         data: {
           firstName: user.firstName,
           lastName: user.lastName,
@@ -102,6 +104,21 @@ export class UserRepository implements UserRepositoryInterface {
       });
     } catch (error: unknown) {
       throw new Error(`Error updating user in repository: ${error}`);
+    }
+  }
+
+  public async updateUserRole(userId: number, roleId: number): Promise<void> {
+    try {
+      await prisma.users.update({
+        where: {
+          id: userId
+        },
+        data: {
+          roleId: roleId
+        }
+      });
+    } catch (error: unknown) {
+      throw new Error(`Error updating user Role in repository: ${error}`);
     }
   }
 

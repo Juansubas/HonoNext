@@ -26,6 +26,11 @@ export const UserSchema = CreateUserSchema.extend({
   updatedAt: z.date()
 });
 
+// Esquema Usuario Role
+export const UserRoleSchema = z.object({
+  roleId: z.number().int().positive(),
+});
+
 // Esquema para Actualizar Usuario
 export const UpdateUserSchema = CreateUserSchema.partial();
 

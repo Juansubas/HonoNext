@@ -12,5 +12,7 @@ export interface UserServiceRepository {
 
   updateUser(userId: number, user: updateUserDto): Promise<void>;
 
+  updateUserRole(userId: number, roleId: number) : Promise<void>;
+
   deleteUser(userId: number): Promise<void>;
 }

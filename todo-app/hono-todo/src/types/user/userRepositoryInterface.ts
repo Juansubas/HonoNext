@@ -8,9 +8,11 @@ export interface UserRepositoryInterface{
 
   getUserByEmail(email: string): Promise<Users | null>
 
-  createUser(user: createUserDto): Promise<void>;
+  createUser(user: createUserDto): Promise<Users>;
 
   updateUser(userId: number, user: updateUserDto): Promise<void>;
+
+  updateUserRole(userId: number, roleId: number) : Promise<void>;
 
   deleteUser(userId: number) : Promise<void>;
 }

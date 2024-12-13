@@ -29,7 +29,8 @@ export class AuthService implements AuthServiceInterface {
       }
       
       const token = await generateToken({
-        id: user.id
+        id: user.id,
+        roleId: user.roleId
       })
   
       return {

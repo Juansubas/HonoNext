@@ -1,14 +1,17 @@
 -- Tabla de Usuarios
 CREATE TABLE Users (
     id SERIAL PRIMARY KEY,
+    role_id Int  NOT NULL,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     age INT NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     phone VARCHAR(20) NOT NULL,
     birth_date DATE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP
+    updated_at TIMESTAMP,
+    CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES Roles(id)
 );
 
 -- Tabla de Tableros
@@ -70,12 +73,10 @@ CREATE TABLE RolesBoard (
 -- Tabla de Roles
 CREATE TABLE Roles (
     id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
     name VARCHAR(255) NOT NULL,
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP,
-    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES Users(id)
+    updated_at TIMESTAMP
 );
 
 -- Tabla de Miembros de Tableros
@@ -83,12 +84,14 @@ CREATE TABLE BoardMembers (
     board_id INT NOT NULL,
     user_id INT NOT NULL,
     role_id INT NOT NULL,
+    status_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
     PRIMARY KEY (user_id, board_id),
     CONSTRAINT fk_board_id FOREIGN KEY (board_id) REFERENCES Boards(id),
     CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES Users(id),
-    CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES RolesBoard(id)
+    CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES RolesBoard(id),
+    CONSTRAINT fk_status_id FOREIGN KEY (status_id) REFERENCES BoardInviteStatus(id)
 );
 
 -- Tabla de Registros de Actividad
@@ -100,4 +103,11 @@ CREATE TABLE ActivityLogs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_board_id FOREIGN KEY (board_id) REFERENCES Boards(id),
     CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES Users(id)
+);
+
+CREATE TABLE BoardInviteStatus (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
 );

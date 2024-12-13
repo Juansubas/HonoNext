@@ -15,6 +15,7 @@ datasource db {
 
 model Users {
   id         Int      @id @default(autoincrement())
+  roleId     Int      @map("role_id")  @default(1)
   firstName  String   @db.VarChar(255) @map("first_name")
   lastName   String   @db.VarChar(255) @map("last_name")
   password   String   @db.VarChar(255) 
@@ -29,7 +30,8 @@ model Users {
   comments       Comments[]
   boardMembers   BoardMembers[]
   activityLogs   ActivityLogs[]
-  roles          Roles[] 
+
+  role Roles @relation(fields: [roleId], references: [id])
 
 }
 
@@ -101,13 +103,11 @@ model RolesBoard {
 
 model Roles {
   id          Int      @id @default(autoincrement()) 
-  userId      Int      @map("user_id")
   name        String   @db.VarChar(255) 
   description String   @db.Text
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
-
-  user Users @relation(fields: [userId], references: [id])
+  user        Users[]
 }
 
 
@@ -115,12 +115,14 @@ model BoardMembers {
   boardId   Int      @map("board_id")
   userId    Int      @map("user_id")
   roleId    Int      @map("role_id")
+  statusId Int       @map("status_Id")
   action    String   @db.VarChar(255) 
   createdAt DateTime @default(now()) @map("created_at")
 
   user  Users  @relation(fields: [userId], references: [id])
   board Boards @relation(fields: [boardId], references: [id])
   role  RolesBoard  @relation(fields: [roleId], references: [id])
+  status BoardInviteStatus @relation(fields: [statusId], references: [id])
 
   @@id([userId, boardId])
 }
@@ -135,4 +137,10 @@ model ActivityLogs {
   user  Users  @relation(fields: [userId], references: [id])
   board Boards @relation(fields: [boardId], references: [id])
 
+}
+
+model BoardInviteStatus {
+  id Int @id @default(autoincrement())
+  name String @unique
+  boardMembers BoardMembers[]
 }

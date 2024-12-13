@@ -51,6 +51,14 @@ export class UserService implements UserServiceRepository {
     }
   }
 
+  public async updateUserRole(userId: number, roleId: number): Promise<void> {
+    try {
+      await this.userRepository.updateUserRole(userId, roleId);
+    } catch (error: unknown) {
+      throw new Error(`Failed to update user Role in service: ${error}`);
+    }
+  }
+
   public async deleteUser(userId: number): Promise<void> {
     try {
       await this.userRepository.deleteUser(userId);
